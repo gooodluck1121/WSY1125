@@ -125,7 +125,8 @@
   }
 
   /* ===== 密码页 ===== */
-  #lock{gap:22px}
+  #lock{gap:22px;overflow-y:auto;-webkit-overflow-scrolling:touch}
+  .lock-left{display:flex;flex-direction:column;align-items:center;gap:14px}
   .lock-title{
     font-family:var(--serif);font-weight:300;letter-spacing:.32em;text-indent:.32em;
     font-size:clamp(20px,5.5vw,30px);color:var(--text);margin:0;
@@ -151,6 +152,31 @@
     40%{transform:translateX(9px)}
     60%{transform:translateX(-6px)}
     80%{transform:translateX(6px)}
+  }
+
+  /* ===== 数字键盘 ===== */
+  .keypad{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+    width:min(290px,78vw);margin:0 auto;
+  }
+  .key{
+    height:54px;border-radius:15px;
+    background:linear-gradient(180deg,#ffffff,#f6efdf);
+    border:1px solid rgba(185,143,74,.38);color:var(--text);
+    font-family:var(--serif);font-size:24px;line-height:1;
+    cursor:pointer;padding:0;
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .12s ease, background .2s ease;
+    -webkit-user-select:none;user-select:none;
+  }
+  .key:active{transform:scale(.92);background:rgba(185,143,74,.16)}
+  .key.key-fn{font-size:15px;color:var(--gold);letter-spacing:.08em}
+  /* 短横屏（手机横过来）：输入框与键盘左右排布 */
+  @media (orientation:landscape) and (max-height:520px){
+    #lock{flex-direction:row;gap:clamp(20px,5vw,56px);align-items:center}
+    .key{height:44px;font-size:20px;border-radius:13px}
+    .key.key-fn{font-size:13px}
+    .keypad{gap:9px;width:min(240px,40vw)}
   }
 
   /* ===== 蛋糕场景 ===== */
@@ -259,13 +285,34 @@
   .page-arrow.next{right:max(10px, env(safe-area-inset-right))}
   .page-arrow.hidden{opacity:0;pointer-events:none}
   @media (hover:none), (pointer:coarse){ .page-arrow{display:none} }
-  .page-swipe-hint{
-    position:absolute;left:0;right:0;bottom:max(38px, calc(env(safe-area-inset-bottom) + 18px));
-    margin:0;font-size:11px;letter-spacing:.24em;color:var(--text-faint);
-    transition:opacity .6s ease;z-index:5;pointer-events:none;
+
+  /* 移动端：按钮切换翻页 */
+  .page-btn{
+    position:absolute;bottom:max(16px, env(safe-area-inset-bottom));left:50%;
+    transform:translateX(-50%);display:none;z-index:6;
+    background:linear-gradient(180deg, rgba(185,143,74,.18), rgba(185,143,74,.08));
+    border:1px solid rgba(185,143,74,.6);color:var(--gold);
+    padding:14px 30px;border-radius:999px;font-size:15px;letter-spacing:.24em;
+    cursor:pointer;min-height:50px;min-width:180px;text-align:center;
+    transition:opacity .3s ease, background .2s ease;
+    -webkit-user-select:none;user-select:none;
   }
-  .page-swipe-hint.hide{opacity:0}
-  @media (hover:hover) and (pointer:fine){ .page-swipe-hint{display:none} }
+  .page-btn:active{background:rgba(185,143,74,.26)}
+  .page-back{
+    position:absolute;top:max(12px, env(safe-area-inset-top));left:max(12px, env(safe-area-inset-left));
+    display:none;z-index:6;
+    background:rgba(255,255,255,.72);border:1px solid rgba(185,143,74,.4);color:var(--gold);
+    padding:10px 18px;border-radius:999px;font-size:13px;letter-spacing:.18em;
+    cursor:pointer;min-height:44px;
+    transition:opacity .3s ease;
+    -webkit-user-select:none;user-select:none;
+  }
+  .page-btn.hidden,.page-back.hidden{opacity:0;pointer-events:none}
+  @media (hover:none), (pointer:coarse){
+    .page-btn,.page-back{display:block}
+    .page-dots{bottom:max(80px, calc(env(safe-area-inset-bottom) + 62px))}
+    .page{padding-bottom:max(128px, calc(env(safe-area-inset-bottom) + 102px))}
+  }
   .blessing-tip{
     margin:22px 0 0;font-size:12px;letter-spacing:.18em;color:var(--text-faint);
   }
@@ -454,10 +501,28 @@
 
   <!-- 密码页 -->
   <section class="scene" id="lock">
-    <p class="lock-title">请输入密码</p>
-    <input class="lock-input" id="lockInput" type="tel" inputmode="numeric" maxlength="4" placeholder="····" aria-label="输入四位数字密码" autocomplete="off">
-    <p class="lock-hint">四位数字</p>
-    <p class="lock-error" id="lockError">不对哦，再想想</p>
+    <div class="lock-left">
+      <p class="lock-title">请输入密码</p>
+      <input class="lock-input" id="lockInput" type="tel" inputmode="none" maxlength="4" placeholder="····" aria-label="输入四位数字密码" readonly tabindex="-1" autocomplete="off">
+      <p class="lock-hint">四位数字</p>
+      <p class="lock-error" id="lockError">不对哦，再想想</p>
+    </div>
+
+    <!-- 数字键盘 -->
+    <div class="keypad" id="keypad" role="group" aria-label="数字键盘">
+      <button class="key" type="button" data-key="1">1</button>
+      <button class="key" type="button" data-key="2">2</button>
+      <button class="key" type="button" data-key="3">3</button>
+      <button class="key" type="button" data-key="4">4</button>
+      <button class="key" type="button" data-key="5">5</button>
+      <button class="key" type="button" data-key="6">6</button>
+      <button class="key" type="button" data-key="7">7</button>
+      <button class="key" type="button" data-key="8">8</button>
+      <button class="key" type="button" data-key="9">9</button>
+      <button class="key key-fn" type="button" data-key="clear">清空</button>
+      <button class="key" type="button" data-key="0">0</button>
+      <button class="key key-fn" type="button" data-key="del" aria-label="删除">⌫</button>
+    </div>
   </section>
 
   <!-- 蛋糕场景 -->
@@ -616,8 +681,9 @@
     <button class="page-arrow prev" id="pagePrev" aria-label="上一页">‹</button>
     <button class="page-arrow next" id="pageNext" aria-label="下一页">›</button>
 
-    <!-- 滑动提示（移动端） -->
-    <p class="page-swipe-hint" id="swipeHint">左右滑动，翻看更多祝福</p>
+    <!-- 移动端：按钮切换 -->
+    <button class="page-back hidden" id="pageBackBtn">‹ 上一页</button>
+    <button class="page-btn" id="pageNextBtn">下一页 ›</button>
   </section>
 
   <!-- 闭眼遮罩 -->
@@ -839,11 +905,10 @@
     stage = 'lock';
     showScene(lockScene);
     musicToggle.classList.add('on');
-    setTimeout(function(){ lockInput.focus(); }, 450);
   }
 
   /* ================= 密码校验 ================= */
-  lockInput.addEventListener('input', function(){
+  function handlePassword(){
     var raw = lockInput.value.replace(/\D/g,'');
     lockInput.value = raw;
     if(raw.length === 4){
@@ -858,6 +923,31 @@
         setTimeout(function(){ lockError.classList.remove('show'); }, 1800);
       }
     }
+  }
+  lockInput.addEventListener('input', handlePassword);
+
+  /* ================= 数字键盘 ================= */
+  function pressKey(key){
+    var cur = lockInput.value;
+    if(key === 'del'){ lockInput.value = cur.slice(0,-1); }
+    else if(key === 'clear'){ lockInput.value = ''; }
+    else{
+      if(cur.length >= 4) return;
+      lockInput.value = cur + key;
+    }
+    handlePassword();
+  }
+  var keypad = $('keypad');
+  keypad.addEventListener('click', function(e){
+    var btn = e.target.closest('.key');
+    if(!btn) return;
+    pressKey(btn.getAttribute('data-key'));
+  });
+  document.addEventListener('keydown', function(e){
+    if(stage !== 'lock') return;
+    if(e.key >= '0' && e.key <= '9'){ pressKey(e.key); }
+    else if(e.key === 'Backspace'){ pressKey('del'); }
+    else if(e.key === 'Delete'){ pressKey('clear'); }
   });
 
   /* ================= 进入蛋糕场景 ================= */
@@ -1002,7 +1092,7 @@
   /* 祝福页点空白处放烟花 */
   blessing.addEventListener('click', function(e){
     if(stage !== 'blessing') return;
-    if(e.target.closest('.wish-star, .fortune-card, .fortune-redraw, .btn, .poem-section, .gift-box, .gift-redraw, .flip-tile, .page-arrow')) return;
+    if(e.target.closest('.wish-star, .fortune-card, .fortune-redraw, .btn, .poem-section, .gift-box, .gift-redraw, .flip-tile, .page-arrow, .page-btn, .page-back')) return;
     fireworkBurst(e.clientX, e.clientY, 30);
   });
 
@@ -1160,7 +1250,8 @@
   var pages = Array.prototype.slice.call(pageTrack.querySelectorAll('.page'));
   var pageCount = pages.length;
   var pageDots = $('pageDots');
-  var pagePrev = $('pagePrev'), pageNext = $('pageNext'), swipeHint = $('swipeHint');
+  var pagePrev = $('pagePrev'), pageNext = $('pageNext');
+  var pageBackBtn = $('pageBackBtn'), pageNextBtn = $('pageNextBtn');
   var curPage = 0;
   (function(){
     for(var i=0;i<pageCount;i++){
@@ -1179,17 +1270,21 @@
     }
     pagePrev.classList.toggle('hidden', curPage===0);
     pageNext.classList.toggle('hidden', curPage===pageCount-1);
+    pageBackBtn.classList.toggle('hidden', curPage===0);
+    pageNextBtn.textContent = (curPage===pageCount-1) ? '回到第一页 ↺' : '下一页 ›';
   }
   function goToPage(i){
     if(i<0 || i>=pageCount || i===curPage) return;
     curPage = i;
     updatePager();
-    if(swipeHint) swipeHint.classList.add('hide');
   }
   function nextPage(){ goToPage(curPage+1); }
   function prevPage(){ goToPage(curPage-1); }
+  function onNext(){ if(curPage===pageCount-1){ goToPage(0); } else { nextPage(); } }
   pagePrev.addEventListener('click', prevPage);
   pageNext.addEventListener('click', nextPage);
+  pageBackBtn.addEventListener('click', prevPage);
+  pageNextBtn.addEventListener('click', onNext);
 
   // 触摸滑动翻页
   var tX=0, tY=0;
