@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#faf9f6">
+<title>汪思妤 · 生日快乐</title>
+<style>
+  :root{
+    --bg:#faf9f6;
+    --bg-deep:#ffffff;
+    --text:#1c1a17;
+    --text-dim:#8a8378;
+    --text-faint:#b3aca0;
+    --gold:#b98f4a;
+    --gold-bright:#d3ab68;
+    --cream:#f6efdf;
+    --cream-dark:#e8dcc4;
+    --grid:#e9e4d9;
+    --serif:"Songti SC","STSong","Noto Serif SC",Georgia,"Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0;height:100%}
+  body{
+    background-color:var(--bg);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size:28px 28px;
+    color:var(--text);
+    font-family:var(--sans);
+    overflow:hidden;
+    position:relative;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  .serif{font-family:var(--serif)}
+
+  /* ===== 背景可爱图案 ===== */
+  .bg-decor{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .bg-deco-item{position:absolute;animation:decoFloat 6.5s ease-in-out infinite}
+  .bg-deco-item svg{width:100%;height:100%;display:block}
+  @keyframes decoFloat{
+    0%,100%{transform:translateY(0) rotate(0deg)}
+    50%{transform:translateY(-12px) rotate(10deg)}
+  }
+
+  /* ===== 场景层 ===== */
+  .scene{
+    position:absolute;inset:0;z-index:1;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:24px;
+    opacity:0;visibility:hidden;
+    transition:opacity .8s ease, visibility .8s;
+    text-align:center;
+  }
+  .scene.active{opacity:1;visibility:visible}
+
+  /* ===== 开场（竖屏） ===== */
+  #intro{
+    justify-content:center;
+    padding-top:max(48px, env(safe-area-inset-top));
+    padding-bottom:max(36px, env(safe-area-inset-bottom));
+  }
+  .intro-top{margin-top:0;animation:rise 1s ease both}
+  .intro-date{
+    font-size:13px;letter-spacing:.42em;color:var(--text-faint);
+    text-transform:uppercase;margin:0 0 6px;
+  }
+  .intro-name{
+    font-family:var(--serif);font-weight:300;
+    font-size:clamp(30px,9vw,52px);letter-spacing:.12em;margin:0;
+    color:var(--text);
+  }
+  .intro-sub{
+    margin:14px auto 0;font-size:14px;letter-spacing:.24em;color:var(--text-dim);
+    max-width:280px;line-height:1.9;
+  }
+  .intro-center{display:flex;flex-direction:column;align-items:center;gap:22px;animation:rise 1s .15s ease both}
+  /* 中间蛋糕按钮 */
+  .cake-btn{
+    position:relative;width:132px;height:132px;border-radius:50%;
+    border:1px solid rgba(185,143,74,.4);
+    background:radial-gradient(circle at 50% 38%, rgba(185,143,74,.14), rgba(185,143,74,.03) 62%, transparent 72%);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;color:var(--gold);
+    box-shadow:0 0 60px rgba(185,143,74,.14), inset 0 0 40px rgba(185,143,74,.05);
+    animation:breathe 3.4s ease-in-out infinite;
+    transition:transform .2s ease, box-shadow .3s ease;
+    -webkit-user-select:none;user-select:none;
+  }
+  .cake-btn:active{transform:scale(.95)}
+  .cake-btn svg{width:64px;height:64px}
+  .cake-btn-label{
+    font-size:13px;letter-spacing:.3em;color:var(--text-dim);margin-top:2px;
+  }
+  .intro-hint{
+    font-size:12px;letter-spacing:.2em;color:var(--text-faint);margin:0;
+    position:absolute;bottom:max(22px, env(safe-area-inset-bottom));left:0;right:0;text-align:center;
+  }
+  .intro-hint .dot{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--gold);margin-right:8px;vertical-align:middle;animation:blink 1.6s ease infinite}
+
+  @keyframes breathe{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-7px)}
+  }
+  @keyframes blink{0%,100%{opacity:.25}50%{opacity:1}}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+  /* ===== 横屏提示（iOS 等无法强制横屏时） ===== */
+  #rotate-hint{
+    position:absolute;inset:0;z-index:60;
+    background:rgba(250,249,246,.97);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;
+    opacity:0;visibility:hidden;transition:opacity .4s ease, visibility .4s;
+  }
+  #rotate-hint.show{opacity:1;visibility:visible}
+  .rotate-icon{animation:rotateHint 2s ease-in-out infinite}
+  @keyframes rotateHint{0%,30%{transform:rotate(0)}70%,100%{transform:rotate(90deg)}}
+  .rotate-text{font-size:15px;letter-spacing:.18em;color:var(--text-dim);line-height:2}
+  .rotate-skip{
+    background:none;border:1px solid rgba(185,143,74,.5);color:var(--gold);
+    padding:12px 26px;border-radius:999px;font-size:14px;letter-spacing:.2em;cursor:pointer;
+  }
+
+  /* ===== 密码页 ===== */
+  #lock{gap:22px}
+  .lock-title{
+    font-family:var(--serif);font-weight:300;letter-spacing:.32em;text-indent:.32em;
+    font-size:clamp(20px,5.5vw,30px);color:var(--text);margin:0;
+  }
+  .lock-input{
+    width:230px;max-width:72vw;height:76px;
+    font-size:34px;letter-spacing:.42em;text-indent:.42em;text-align:center;
+    font-family:var(--serif);color:var(--text);
+    background:#ffffff;border:1.5px solid #e4dccb;border-radius:18px;
+    outline:none;caret-color:var(--gold);
+    transition:border-color .2s ease, box-shadow .2s ease;
+    -webkit-user-select:text;user-select:text;
+  }
+  .lock-input::placeholder{color:var(--text-faint);letter-spacing:.42em;text-indent:.42em}
+  .lock-input:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(185,143,74,.14)}
+  .lock-input.shake{animation:shake .42s ease}
+  .lock-hint{font-size:13px;letter-spacing:.18em;color:var(--text-dim);margin:0}
+  .lock-error{font-size:13px;letter-spacing:.2em;color:#c05b4d;margin:0;opacity:0;transition:opacity .3s ease;min-height:1.2em}
+  .lock-error.show{opacity:1}
+  @keyframes shake{
+    0%,100%{transform:translateX(0)}
+    20%{transform:translateX(-9px)}
+    40%{transform:translateX(9px)}
+    60%{transform:translateX(-6px)}
+    80%{transform:translateX(6px)}
+  }
+
+  /* ===== 蛋糕场景 ===== */
+  #cake-scene{padding:0}
+  .cake-stage{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(18px,4vh,40px);
+    width:100%;height:100%;
+  }
+  /* 横屏：左蛋糕右文字 */
+  @media (orientation:landscape) and (min-width:640px){
+    .cake-stage{flex-direction:row;gap:clamp(28px,6vw,72px)}
+  }
+  .cake-holder{position:relative;display:flex;align-items:center;justify-content:center}
+  .cake-glow{
+    position:absolute;left:50%;top:42%;width:120%;aspect-ratio:1/1;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle, rgba(211,171,104,.4), rgba(211,171,104,.12) 46%, transparent 70%);
+    filter:blur(2px);pointer-events:none;
+    animation:glowPulse 3.6s ease-in-out infinite;
+    transition:opacity .6s ease;
+  }
+  .cake-glow.off{opacity:0}
+  .cake-svg{width:min(52vmin,340px);height:auto;position:relative;z-index:2}
+  .flame{
+    position:absolute;z-index:3;left:50%;top:calc(20% - 26px);
+    width:14px;height:26px;margin-left:-7px;
+    cursor:pointer;
+    transform-origin:50% 100%;
+    animation:flicker 1.1s ease-in-out infinite;
+  }
+  .flame svg{width:100%;height:100%;display:block;overflow:visible}
+  .flame.hit{pointer-events:none}
+  .smoke{
+    position:absolute;z-index:4;left:50%;top:calc(20% - 34px);width:12px;height:34px;margin-left:-6px;
+    opacity:0;pointer-events:none;
+  }
+  .smoke.show{animation:riseSmoke 2.4s ease-out forwards}
+  @keyframes flicker{
+    0%,100%{transform:scaleY(1) rotate(-1.5deg)}
+    25%{transform:scaleY(1.07) rotate(1.2deg)}
+    50%{transform:scaleY(.94) rotate(-1deg)}
+    75%{transform:scaleY(1.05) rotate(.8deg)}
+  }
+  @keyframes glowPulse{0%,100%{opacity:.85}50%{opacity:1}}
+  @keyframes riseSmoke{
+    0%{opacity:0;transform:translateY(0) scaleX(1)}
+    25%{opacity:.55;transform:translateY(-8px) scaleX(1.1)}
+    100%{opacity:0;transform:translateY(-46px) scaleX(1.5)}
+  }
+
+  .cake-copy{max-width:340px;text-align:center}
+  @media (orientation:landscape) and (min-width:640px){
+    .cake-copy{text-align:left}
+  }
+  .cake-title{
+    font-family:var(--serif);font-weight:300;letter-spacing:.1em;
+    font-size:clamp(26px,6vw,46px);margin:0 0 14px;color:var(--text);
+  }
+  .cake-sub{
+    font-size:clamp(14px,2.4vw,17px);letter-spacing:.12em;color:var(--text-dim);
+    line-height:1.9;margin:0;min-height:3.4em;
+  }
+  .btn{
+    margin-top:26px;
+    background:linear-gradient(180deg, rgba(185,143,74,.16), rgba(185,143,74,.07));
+    border:1px solid rgba(185,143,74,.5);color:var(--gold);
+    padding:14px 34px;border-radius:999px;font-size:15px;letter-spacing:.22em;
+    cursor:pointer;min-height:48px;min-width:48px;
+    transition:transform .15s ease, background .2s ease;
+  }
+  .btn:active{transform:scale(.96)}
+  .btn.hidden{display:none}
+
+  /* ===== 祝福场景（分页） ===== */
+  #blessing{overflow:hidden;padding:0;align-items:stretch;justify-content:flex-start}
+  .page-track{display:flex;width:100%;height:100%;transition:transform .68s cubic-bezier(.22,.7,.3,1)}
+  .page{
+    flex:0 0 100%;width:100%;height:100%;
+    overflow-y:auto;-webkit-overflow-scrolling:touch;
+    display:flex;
+    padding:max(60px, env(safe-area-inset-top)) 26px max(76px, env(safe-area-inset-bottom));
+  }
+  .page-inner{
+    margin:auto;width:100%;max-width:560px;
+    display:flex;flex-direction:column;align-items:center;text-align:center;
+    opacity:0;transform:translateY(18px);
+    transition:opacity .5s ease .14s, transform .5s ease .14s;
+  }
+  .page.active .page-inner{opacity:1;transform:translateY(0)}
+  .page .wish-section,.page .gift-section,.page .flip-section,.page .fortune-section{margin-top:0}
+  .page-dots{
+    position:absolute;left:0;right:0;bottom:max(20px, env(safe-area-inset-bottom));
+    display:flex;justify-content:center;align-items:center;gap:9px;z-index:5;pointer-events:none;
+  }
+  .page-dot{width:7px;height:7px;border-radius:50%;background:#d9d2c2;transition:all .4s ease;opacity:.95}
+  .page-dot.on{background:var(--gold);transform:scale(1.4);box-shadow:0 0 8px rgba(185,143,74,.55)}
+  .page-arrow{
+    position:absolute;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;
+    background:rgba(255,255,255,.78);border:1px solid rgba(185,143,74,.38);color:var(--gold);
+    font-size:26px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    z-index:5;padding:0;transition:opacity .3s ease, transform .2s ease;
+    -webkit-user-select:none;user-select:none;
+  }
+  .page-arrow:active{transform:translateY(-50%) scale(.9)}
+  .page-arrow.prev{left:max(10px, env(safe-area-inset-left))}
+  .page-arrow.next{right:max(10px, env(safe-area-inset-right))}
+  .page-arrow.hidden{opacity:0;pointer-events:none}
+  @media (hover:none), (pointer:coarse){ .page-arrow{display:none} }
+  .page-swipe-hint{
+    position:absolute;left:0;right:0;bottom:max(38px, calc(env(safe-area-inset-bottom) + 18px));
+    margin:0;font-size:11px;letter-spacing:.24em;color:var(--text-faint);
+    transition:opacity .6s ease;z-index:5;pointer-events:none;
+  }
+  .page-swipe-hint.hide{opacity:0}
+  @media (hover:hover) and (pointer:fine){ .page-swipe-hint{display:none} }
+  .blessing-tip{
+    margin:22px 0 0;font-size:12px;letter-spacing:.18em;color:var(--text-faint);
+  }
+  .blessing-name{
+    font-family:var(--serif);font-weight:300;letter-spacing:.14em;
+    font-size:clamp(30px,8vw,58px);margin:0 0 18px;color:var(--text);
+    animation:rise 1.2s ease both;
+  }
+  .blessing-line{
+    font-size:clamp(15px,3vw,19px);letter-spacing:.16em;color:var(--text-dim);
+    line-height:2.2;margin:0;animation:rise 1.2s .2s ease both;
+  }
+  .blessing-date{
+    margin-top:34px;font-size:13px;letter-spacing:.5em;color:var(--text-faint);
+    animation:rise 1.2s .5s ease both;
+  }
+  .spark{
+    position:fixed;bottom:-20px;border-radius:50%;
+    background:radial-gradient(circle, var(--gold-bright), rgba(211,171,104,0));
+    animation:floatUp linear infinite;pointer-events:none;
+  }
+  @keyframes floatUp{
+    0%{transform:translateY(0) translateX(0) scale(1);opacity:0}
+    12%{opacity:.9}
+    100%{transform:translateY(-108vh) translateX(26px) scale(.4);opacity:0}
+  }
+
+  /* ===== 闭眼遮罩 ===== */
+  #darkOverlay{
+    position:fixed;inset:0;z-index:50;background:#050403;
+    opacity:0;pointer-events:none;transition:opacity 1.6s ease;
+  }
+  #darkOverlay.black{opacity:1}
+
+  /* ===== 音乐开关 ===== */
+  #musicToggle{
+    position:fixed;top:max(14px, env(safe-area-inset-top));right:max(14px, env(safe-area-inset-right));
+    z-index:70;width:44px;height:44px;border-radius:50%;
+    background:rgba(0,0,0,.03);border:1px solid rgba(0,0,0,.1);
+    color:var(--text-dim);cursor:pointer;display:flex;align-items:center;justify-content:center;
+    opacity:0;visibility:hidden;transition:opacity .5s ease, visibility .5s;
+  }
+  #musicToggle.on{opacity:1;visibility:visible}
+  #musicToggle.playing{color:var(--gold)}
+  #musicToggle svg{width:20px;height:20px}
+
+  /* ===== 金色烟花画布 ===== */
+  #fireworks{position:fixed;inset:0;z-index:40;pointer-events:none}
+
+  /* ===== 点亮愿望星 ===== */
+  .wish-section{margin-top:44px;width:100%;animation:rise 1s .9s ease both}
+  .wish-divider{display:flex;align-items:center;gap:16px;white-space:nowrap;color:var(--text-faint);font-size:12px;letter-spacing:.34em;margin:0 0 20px}
+  .wish-divider::before,.wish-divider::after{content:'';flex:1;height:1px;background:var(--grid)}
+  .wish-stars{display:flex;justify-content:center;flex-wrap:wrap;gap:clamp(6px,2.6vw,14px)}
+  .wish-star{width:42px;height:42px;background:none;border:none;padding:0;cursor:pointer;color:#d9d2c2;transition:color .4s ease, transform .2s ease}
+  .wish-star svg{width:100%;height:100%;display:block}
+  .wish-star:active{transform:scale(.84)}
+  .wish-star.lit{color:var(--gold-bright)}
+  .wish-star.lit svg{filter:drop-shadow(0 0 7px rgba(211,171,104,.6))}
+  .wish-star.pop{animation:starPop .5s ease}
+  @keyframes starPop{0%{transform:scale(1)}45%{transform:scale(1.45)}100%{transform:scale(1)}}
+  .wish-tags{min-height:30px;margin-top:22px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+  .wish-tag{font-family:var(--serif);font-size:13px;letter-spacing:.18em;color:var(--gold);border:1px solid rgba(185,143,74,.35);border-radius:999px;padding:7px 16px;background:rgba(246,239,223,.5);animation:rise .6s ease both}
+  .wish-done{margin:16px 0 0;font-family:var(--serif);font-size:14px;letter-spacing:.26em;color:var(--gold);opacity:0;transition:opacity .7s ease}
+  .wish-done.show{opacity:1}
+
+  /* ===== 抽签祝福 ===== */
+  .fortune-section{margin-top:48px;width:100%;animation:rise 1s 1.15s ease both}
+  .fortune-card{perspective:900px;width:190px;height:270px;margin:0 auto;cursor:pointer;outline:none}
+  .fortune-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.2,.7,.3,1)}
+  .fortune-card.flipped .fortune-inner{transform:rotateY(180deg)}
+  .fortune-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;box-sizing:border-box}
+  .fortune-front{background:linear-gradient(180deg,#ffffff,#f6efdf);border:1px solid rgba(185,143,74,.4);box-shadow:0 12px 34px rgba(28,26,23,.07)}
+  .fortune-back{background:linear-gradient(180deg,#fbf7ec,#f3ead6);border:1px solid rgba(185,143,74,.5);transform:rotateY(180deg);box-shadow:0 12px 34px rgba(28,26,23,.07)}
+  .fortune-front .big{font-family:var(--serif);font-size:54px;color:var(--gold);letter-spacing:.08em;line-height:1;margin-bottom:12px}
+  .fortune-front .label{font-size:12px;letter-spacing:.4em;color:var(--text-faint)}
+  .fortune-text{font-family:var(--serif);font-size:15px;letter-spacing:.08em;line-height:2;color:var(--text);text-align:center}
+  .fortune-redraw{margin-top:20px;font-size:12px;letter-spacing:.26em;color:var(--text-faint);background:none;border:none;cursor:pointer;padding:6px 12px;transition:color .3s ease}
+  .fortune-redraw:hover{color:var(--gold)}
+
+  /* ===== 祝福诗句：逐句点亮 ===== */
+  .poem-section{margin:22px 0 0;width:100%;cursor:pointer;outline:none;-webkit-user-select:none;user-select:none;animation:rise 1.2s .15s ease both}
+  .poem-lines{display:flex;flex-direction:column;gap:13px;margin:0}
+  .poem-line{
+    font-size:clamp(15px,3vw,19px);letter-spacing:.16em;color:var(--text-dim);
+    line-height:1.6;margin:0;opacity:0;transform:translateY(10px);
+    transition:opacity .9s ease, transform .9s ease;
+  }
+  .poem-line.show{opacity:1;transform:translateY(0)}
+  .poem-line.bright{color:var(--gold)}
+  .poem-hint{margin:22px 0 0;font-size:12px;letter-spacing:.24em;color:var(--text-faint);transition:opacity .5s ease}
+  .poem-hint .dot{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--gold);margin-right:8px;vertical-align:middle;animation:blink 1.6s ease infinite}
+  .poem-hint.off{opacity:0}
+
+  /* ===== 拆礼物盒 ===== */
+  .gift-section{margin-top:48px;width:100%;animation:rise 1s 1.05s ease both}
+  .gift-box{width:172px;margin:0 auto;cursor:pointer;outline:none;-webkit-user-select:none;user-select:none}
+  .gift-svg{width:100%;height:auto;display:block;filter:drop-shadow(0 8px 22px rgba(28,26,23,.08));transition:transform .2s ease}
+  .gift-box:active .gift-svg{transform:scale(.95)}
+  .gift-lid{transform-origin:50% 0%;transform-box:fill-box;transition:transform .7s cubic-bezier(.2,.7,.3,1), opacity .7s ease}
+  .gift-box.open .gift-lid{transform:translateY(-48px) rotate(-12deg);opacity:0}
+  .gift-reveal{margin:20px 0 0;min-height:2.6em;font-family:var(--serif);font-size:15px;letter-spacing:.1em;line-height:1.9;color:var(--gold);opacity:0;transition:opacity .7s ease}
+  .gift-reveal.show{opacity:1}
+  .gift-redraw{margin-top:16px;font-size:12px;letter-spacing:.26em;color:var(--text-faint);background:none;border:none;cursor:pointer;padding:6px 12px;transition:color .3s ease, opacity .5s ease;opacity:0;pointer-events:none}
+  .gift-redraw:hover{color:var(--gold)}
+  .gift-redraw.show{opacity:1;pointer-events:auto}
+
+  /* ===== 翻祝福牌 ===== */
+  .flip-section{margin-top:48px;width:100%;animation:rise 1s 1.2s ease both}
+  .flip-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:340px;margin:0 auto}
+  .flip-tile{position:relative;aspect-ratio:1/1;perspective:600px;background:none;border:none;padding:0;cursor:pointer;outline:none;-webkit-user-select:none;user-select:none}
+  .flip-inner{position:absolute;inset:0;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.2,.7,.3,1)}
+  .flip-tile.flipped .flip-inner{transform:rotateY(180deg)}
+  .flip-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:12px;display:flex;align-items:center;justify-content:center}
+  .flip-front{background:linear-gradient(180deg,#ffffff,#f6efdf);border:1px solid rgba(185,143,74,.4)}
+  .flip-front svg{width:40%;height:40%;color:#dccfa8}
+  .flip-back{background:linear-gradient(180deg,#fbf7ec,#f3ead6);border:1px solid rgba(185,143,74,.55);transform:rotateY(180deg);box-shadow:0 0 16px rgba(211,171,104,.25)}
+  .flip-word{font-family:var(--serif);font-size:clamp(15px,4.6vw,19px);letter-spacing:.12em;color:var(--gold)}
+  .flip-done{margin:18px 0 0;font-family:var(--serif);font-size:14px;letter-spacing:.26em;color:var(--gold);opacity:0;transition:opacity .7s ease}
+  .flip-done.show{opacity:1}
+
+  /* ===== 生成贺卡 ===== */
+  #cardBtn{animation:rise 1s 1.4s ease both}
+  #cardOverlay{position:fixed;inset:0;z-index:80;background:rgba(28,26,23,.45);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:22px;opacity:0;visibility:hidden;transition:opacity .4s ease, visibility .4s}
+  #cardOverlay.show{opacity:1;visibility:visible}
+  .card-frame{position:relative;width:min(92vw,400px);background:linear-gradient(180deg,#fffefb,#faf7ef);border:1px solid rgba(185,143,74,.5);border-radius:22px;padding:46px 34px 40px;text-align:center;box-shadow:0 30px 80px rgba(28,26,23,.28);animation:cardIn .5s cubic-bezier(.2,.7,.3,1) both}
+  @keyframes cardIn{from{opacity:0;transform:translateY(20px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+  .card-corner{position:absolute;width:18px;height:18px;border:1.5px solid var(--gold-bright);opacity:.75}
+  .card-corner.tl{top:14px;left:14px;border-right:none;border-bottom:none;border-top-left-radius:6px}
+  .card-corner.tr{top:14px;right:14px;border-left:none;border-bottom:none;border-top-right-radius:6px}
+  .card-corner.bl{bottom:14px;left:14px;border-right:none;border-top:none;border-bottom-left-radius:6px}
+  .card-corner.br{bottom:14px;right:14px;border-left:none;border-top:none;border-bottom-right-radius:6px}
+  .card-kicker{font-size:11px;letter-spacing:.5em;color:var(--text-faint);margin:0 0 22px}
+  .card-name{font-family:var(--serif);font-weight:300;font-size:clamp(28px,7.5vw,38px);letter-spacing:.14em;color:var(--text);margin:0}
+  .card-blessing{font-family:var(--serif);font-size:15px;letter-spacing:.1em;line-height:2.1;color:var(--text-dim);margin:22px 0 0}
+  .card-date{margin-top:30px;font-size:12px;letter-spacing:.5em;color:var(--text-faint)}
+  .card-save{margin:26px 0 0;font-size:12px;letter-spacing:.18em;color:var(--gold);opacity:.85}
+  .card-close{position:absolute;top:18px;right:18px;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.4);background:rgba(28,26,23,.25);color:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+
+  /* ===== 无障碍：减少动效 ===== */
+  @media (prefers-reduced-motion:reduce){
+    .flame,.cake-glow,.cake-btn,.rotate-icon,.spark{animation:none!important}
+    #darkOverlay{transition:opacity .2s ease}
+  }
+</style>
+</head>
+<body>
+
+  <!-- 开场（竖屏） -->
+  <section class="scene active" id="intro">
+    <div class="intro-center">
+      <button class="cake-btn" id="cakeBtn" aria-label="点亮生日蛋糕，进入横屏全屏">
+        <svg viewBox="0 0 200 220" fill="none" aria-hidden="true">
+          <rect x="20" y="132" width="160" height="72" rx="24" fill="#f6c9c9" stroke="#6f4e37" stroke-width="4.5"/>
+          <circle cx="40" cy="132" r="11" fill="#ffffff" stroke="#6f4e37" stroke-width="3.5"/>
+          <circle cx="66" cy="132" r="11" fill="#ffffff" stroke="#6f4e37" stroke-width="3.5"/>
+          <circle cx="92" cy="132" r="11" fill="#ffffff" stroke="#6f4e37" stroke-width="3.5"/>
+          <circle cx="118" cy="132" r="11" fill="#ffffff" stroke="#6f4e37" stroke-width="3.5"/>
+          <circle cx="144" cy="132" r="11" fill="#ffffff" stroke="#6f4e37" stroke-width="3.5"/>
+          <circle cx="170" cy="132" r="11" fill="#ffffff" stroke="#6f4e37" stroke-width="3.5"/>
+          <rect x="46" y="84" width="108" height="52" rx="20" fill="#fdf1d6" stroke="#6f4e37" stroke-width="4.5"/>
+          <circle cx="62" cy="84" r="10" fill="#ffffff" stroke="#6f4e37" stroke-width="3.5"/>
+          <circle cx="86" cy="84" r="10" fill="#ffffff" stroke="#6f4e37" stroke-width="3.5"/>
+          <circle cx="110" cy="84" r="10" fill="#ffffff" stroke="#6f4e37" stroke-width="3.5"/>
+          <circle cx="134" cy="84" r="10" fill="#ffffff" stroke="#6f4e37" stroke-width="3.5"/>
+          <rect x="91" y="44" width="18" height="44" rx="9" fill="#ffdbe4" stroke="#6f4e37" stroke-width="4.5"/>
+          <path d="M100 16 C108 24 110 34 103 40 C101 43 100 44 100 44 C100 44 99 43 97 40 C90 34 92 24 100 16 Z" fill="#f5b84a" stroke="#6f4e37" stroke-width="3.5" stroke-linejoin="round"/>
+          <path d="M142 65 q 8 -13 2 -21" stroke="#6f4e37" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <circle cx="142" cy="76" r="11" fill="#e05c5c" stroke="#6f4e37" stroke-width="4"/>
+        </svg>
+      </button>
+    </div>
+
+    <p class="intro-hint"><span class="dot"></span>建议横屏</p>
+  </section>
+
+  <!-- 横屏提示 -->
+  <div id="rotate-hint" role="alert">
+    <svg class="rotate-icon" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#b98f4a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12a9 9 0 1 1-2.64-6.36"/>
+      <path d="M21 3v6h-6"/>
+    </svg>
+    <p class="rotate-text">请将手机横过来<br>体验更佳</p>
+    <button class="rotate-skip" id="rotateSkip">直接开始</button>
+  </div>
+
+  <!-- 密码页 -->
+  <section class="scene" id="lock">
+    <p class="lock-title">请输入密码</p>
+    <input class="lock-input" id="lockInput" type="tel" inputmode="numeric" maxlength="4" placeholder="····" aria-label="输入四位数字密码" autocomplete="off">
+    <p class="lock-hint">四位数字</p>
+    <p class="lock-error" id="lockError">不对哦，再想想</p>
+  </section>
+
+  <!-- 蛋糕场景 -->
+  <section class="scene" id="cake-scene">
+    <div class="cake-stage">
+      <div class="cake-holder" id="cakeHolder">
+        <div class="cake-glow" id="cakeGlow"></div>
+        <svg class="cake-svg" viewBox="0 0 200 220" fill="none" aria-label="生日蛋糕">
+          <rect x="20" y="132" width="160" height="72" rx="24" fill="#f6c9c9" stroke="#6f4e37" stroke-width="4.5"/>
+          <circle cx="40" cy="132" r="11" fill="#ffffff" stroke="#6f4e37" stroke-width="3.5"/>
+          <circle cx="66" cy="132" r="11" fill="#ffffff" stroke="#6f4e37" stroke-width="3.5"/>
+          <circle cx="92" cy="132" r="11" fill="#ffffff" stroke="#6f4e37" stroke-width="3.5"/>
+          <circle cx="118" cy="132" r="11" fill="#ffffff" stroke="#6f4e37" stroke-width="3.5"/>
+          <circle cx="144" cy="132" r="11" fill="#ffffff" stroke="#6f4e37" stroke-width="3.5"/>
+          <circle cx="170" cy="132" r="11" fill="#ffffff" stroke="#6f4e37" stroke-width="3.5"/>
+          <rect x="46" y="84" width="108" height="52" rx="20" fill="#fdf1d6" stroke="#6f4e37" stroke-width="4.5"/>
+          <circle cx="62" cy="84" r="10" fill="#ffffff" stroke="#6f4e37" stroke-width="3.5"/>
+          <circle cx="86" cy="84" r="10" fill="#ffffff" stroke="#6f4e37" stroke-width="3.5"/>
+          <circle cx="110" cy="84" r="10" fill="#ffffff" stroke="#6f4e37" stroke-width="3.5"/>
+          <circle cx="134" cy="84" r="10" fill="#ffffff" stroke="#6f4e37" stroke-width="3.5"/>
+          <rect x="91" y="44" width="18" height="44" rx="9" fill="#ffdbe4" stroke="#6f4e37" stroke-width="4.5"/>
+          <path d="M142 65 q 8 -13 2 -21" stroke="#6f4e37" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+          <circle cx="142" cy="76" r="11" fill="#e05c5c" stroke="#6f4e37" stroke-width="4"/>
+        </svg>
+        <div class="flame" id="flame" role="button" aria-label="吹灭蜡烛">
+          <svg viewBox="0 0 24 40" fill="none">
+            <path d="M12 1 C18 10 20 20 14 30 C13 34 12 36 12 36 C12 36 11 34 10 30 C4 20 6 10 12 1 Z" fill="#f5b84a" stroke="#6f4e37" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M12 15 C15 20 16 26 13 31 C12 33 12 34 12 34 C12 34 12 33 11 31 C8 26 9 20 12 15 Z" fill="#fdf3d7"/>
+          </svg>
+        </div>
+        <div class="smoke" id="smoke">
+          <svg viewBox="0 0 12 34" fill="none">
+            <path d="M6 0 C2 6 1 12 6 18 C10 23 11 28 8 33" stroke="#9a8f7e" stroke-width="2" stroke-linecap="round" opacity=".6"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="cake-copy">
+        <h2 class="cake-title" id="cakeTitle">生日快乐</h2>
+        <p class="cake-sub" id="cakeSub">愿你新的一岁，眼里有光</p>
+        <button class="btn hidden" id="wishBtn">开始许愿</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 祝福场景（分页） -->
+  <section class="scene" id="blessing">
+    <div class="page-track" id="pageTrack">
+
+      <!-- 第1页：祝福诗 -->
+      <div class="page active">
+        <div class="page-inner">
+          <h2 class="blessing-name">汪思妤 · 生日快乐</h2>
+          <!-- ⬇️ 祝福语占位：把下面每行换成你想说的话 ⬇️ -->
+          <div class="poem-section" id="poemSection" role="button" tabindex="0" aria-label="逐句点亮祝福">
+            <div class="poem-lines" id="poemLines">
+              <p class="poem-line">愿新的一岁</p>
+              <p class="poem-line">眼里有光，心中有暖</p>
+              <p class="poem-line">所愿皆所得，所行皆坦途</p>
+              <p class="poem-line">愿你的笑，比阳光更明亮</p>
+              <p class="poem-line">愿岁月温柔，予你偏爱</p>
+              <p class="poem-line">所有的美好，都正朝你而来</p>
+              <p class="poem-line bright">—— 汪思妤，生日快乐</p>
+            </div>
+            <p class="poem-hint" id="poemHint"><span class="dot"></span>轻触屏幕，逐句点亮祝福</p>
+          </div>
+          <!-- ⬆️ 祝福语占位结束 ⬆️ -->
+          <p class="blessing-date">2026 · 11 · 25</p>
+        </div>
+      </div>
+
+      <!-- 第2页：点亮愿望星 -->
+      <div class="page">
+        <div class="page-inner">
+          <div class="wish-section" id="wishSection">
+            <p class="wish-divider">点亮愿望星</p>
+            <div class="wish-stars" id="wishStars"></div>
+            <div class="wish-tags" id="wishTags"></div>
+            <p class="wish-done" id="wishDone">愿你心想事成，万事胜意</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第3页：拆礼物盒 -->
+      <div class="page">
+        <div class="page-inner">
+          <div class="gift-section" id="giftSection">
+            <p class="wish-divider">拆一份礼物</p>
+            <div class="gift-box" id="giftBox" role="button" tabindex="0" aria-label="拆开礼物">
+              <svg class="gift-svg" viewBox="0 0 200 220" fill="none" aria-hidden="true">
+                <g class="gift-lid">
+                  <path d="M100 72 C88 56 70 54 68 66 C66 78 82 82 100 72 Z" fill="#f5b84a" stroke="#6f4e37" stroke-width="3.5" stroke-linejoin="round"/>
+                  <path d="M100 72 C112 56 130 54 132 66 C134 78 118 82 100 72 Z" fill="#f5b84a" stroke="#6f4e37" stroke-width="3.5" stroke-linejoin="round"/>
+                  <circle cx="100" cy="72" r="6" fill="#e05c5c" stroke="#6f4e37" stroke-width="3"/>
+                  <rect x="26" y="78" width="148" height="40" rx="10" fill="#f6c9c9" stroke="#6f4e37" stroke-width="4.5"/>
+                  <rect x="92" y="78" width="16" height="40" fill="#f5b84a" stroke="#6f4e37" stroke-width="3"/>
+                </g>
+                <g class="gift-body">
+                  <rect x="30" y="116" width="140" height="90" rx="10" fill="#fdf1d6" stroke="#6f4e37" stroke-width="4.5"/>
+                  <rect x="92" y="116" width="16" height="90" fill="#f5b84a" stroke="#6f4e37" stroke-width="3"/>
+                </g>
+              </svg>
+            </div>
+            <p class="gift-reveal" id="giftReveal"></p>
+            <button class="gift-redraw" id="giftRedraw">再拆一个</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第4页：翻祝福牌 -->
+      <div class="page">
+        <div class="page-inner">
+          <div class="flip-section" id="flipSection">
+            <p class="wish-divider">翻一张祝福牌</p>
+            <div class="flip-grid" id="flipGrid"></div>
+            <p class="flip-done" id="flipDone">九张祝福，统统送给你</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第5页：抽一支签 -->
+      <div class="page">
+        <div class="page-inner">
+          <div class="fortune-section" id="fortuneSection">
+            <p class="wish-divider">抽一支签</p>
+            <div class="fortune-card" id="fortuneCard" role="button" tabindex="0" aria-label="抽一支签">
+              <div class="fortune-inner">
+                <div class="fortune-face fortune-front">
+                  <span class="big">签</span>
+                  <span class="label">点我抽签</span>
+                </div>
+                <div class="fortune-face fortune-back">
+                  <span class="fortune-text" id="fortuneText">愿你所愿皆所得</span>
+                </div>
+              </div>
+            </div>
+            <button class="fortune-redraw" id="fortuneRedraw">再抽一支</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 第6页：生成贺卡 -->
+      <div class="page">
+        <div class="page-inner">
+          <button class="btn" id="cardBtn">生成专属贺卡</button>
+          <p class="blessing-tip">长按屏幕截图，把祝福留下来</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 分页指示点 -->
+    <div class="page-dots" id="pageDots"></div>
+
+    <!-- 左右翻页箭头（桌面） -->
+    <button class="page-arrow prev" id="pagePrev" aria-label="上一页">‹</button>
+    <button class="page-arrow next" id="pageNext" aria-label="下一页">›</button>
+
+    <!-- 滑动提示（移动端） -->
+    <p class="page-swipe-hint" id="swipeHint">左右滑动，翻看更多祝福</p>
+  </section>
+
+  <!-- 闭眼遮罩 -->
+  <div id="darkOverlay"></div>
+
+  <!-- 音乐开关 -->
+  <button id="musicToggle" aria-label="音乐开关" aria-pressed="false">
+    <svg id="iconOn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+    </svg>
+  </button>
+
+  <!-- 金色烟花画布 -->
+  <canvas id="fireworks"></canvas>
+
+  <!-- 专属贺卡浮层 -->
+  <div id="cardOverlay" role="dialog" aria-modal="true" aria-label="专属贺卡">
+    <button class="card-close" id="cardClose" aria-label="关闭">✕</button>
+    <div class="card-frame">
+      <span class="card-corner tl"></span><span class="card-corner tr"></span><span class="card-corner bl"></span><span class="card-corner br"></span>
+      <p class="card-kicker">HAPPY BIRTHDAY</p>
+      <h2 class="card-name">汪思妤</h2>
+      <p class="card-blessing">愿新的一岁<br>眼里有光，心中有暖<br>所愿皆所得，所行皆坦途<br>所有的美好，都正朝你而来</p>
+      <p class="card-date">2026 · 11 · 25</p>
+      <p class="card-save">长按截图，留住这份祝福</p>
+    </div>
+  </div>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+  var intro = $('intro'), lockScene = $('lock'), cakeScene = $('cake-scene'), blessing = $('blessing');
+  var rotateHint = $('rotate-hint'), darkOverlay = $('darkOverlay');
+  var cakeBtn = $('cakeBtn'), rotateSkip = $('rotateSkip');
+  var lockInput = $('lockInput'), lockError = $('lockError');
+  var flame = $('flame'), smoke = $('smoke'), cakeGlow = $('cakeGlow');
+  var cakeHolder = $('cakeHolder');
+  var cakeTitle = $('cakeTitle'), cakeSub = $('cakeSub'), wishBtn = $('wishBtn');
+  var musicToggle = $('musicToggle');
+
+  var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
+  /* ================= 背景可爱图案 ================= */
+  (function(){
+    var shapes = [
+      '<svg viewBox="0 0 24 24" fill="none"><path d="M12 2 l2.5 7.5 7.5 2.5 -7.5 2.5 -2.5 7.5 -2.5 -7.5 -7.5 -2.5 7.5 -2.5 Z" fill="#e7cfa4"/></svg>',
+      '<svg viewBox="0 0 24 24" fill="none"><path d="M12 20 c-5 -4 -8 -7.5 -8 -11.5 c0 -2.5 2 -4.5 4.5 -4.5 c2 0 2.8 1 3.5 2 c0.7 -1 1.5 -2 3.5 -2 c2.5 0 4.5 2 4.5 4.5 c0 4 -3 7.5 -8 11.5 Z" fill="#f3caca"/></svg>',
+      '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="#e2dcc9"/></svg>',
+      '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" fill="#e7cfa4"/><circle cx="12" cy="5" r="3" fill="#f3caca"/><circle cx="19" cy="12" r="3" fill="#f3caca"/><circle cx="12" cy="19" r="3" fill="#f3caca"/><circle cx="5" cy="12" r="3" fill="#f3caca"/></svg>'
+    ];
+    var layer = document.createElement('div');
+    layer.className = 'bg-decor';
+    document.body.appendChild(layer);
+    var n = isTouch ? 12 : 18;
+    for(var i=0;i<n;i++){
+      var s = document.createElement('span');
+      s.className = 'bg-deco-item';
+      s.innerHTML = shapes[i % shapes.length];
+      s.style.left = (Math.random()*100) + '%';
+      s.style.top = (Math.random()*100) + '%';
+      var size = 14 + Math.random()*22;
+      s.style.width = size + 'px';
+      s.style.height = size + 'px';
+      s.style.opacity = (0.22 + Math.random()*0.33).toFixed(2);
+      s.style.animationDuration = (5 + Math.random()*4) + 's';
+      s.style.animationDelay = (Math.random()*4) + 's';
+      layer.appendChild(s);
+    }
+  })();
+  var stage = 'intro'; // intro -> cake -> wish -> dark -> lit -> blown -> blessing
+  var timers = [];
+
+  /* ================= 音乐（Web Audio 合成，温馨舒缓） ================= */
+  var audioCtx = null, masterGain = null, musicOn = false, musicTimer = null, chordIdx = 0;
+  var chords = [
+    [261.63, 329.63, 392.00, 493.88], // Cmaj7
+    [220.00, 261.63, 329.63, 392.00], // Am7
+    [174.61, 220.00, 261.63, 349.23], // Fmaj7
+    [196.00, 246.94, 293.66, 392.00]  // G
+  ];
+
+  function startMusic(){
+    if(musicOn) return;
+    musicOn = true;
+    try{
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      masterGain = audioCtx.createGain();
+      masterGain.gain.value = 0.16;
+      masterGain.connect(audioCtx.destination);
+      musicToggle.classList.add('playing');
+      musicToggle.setAttribute('aria-pressed','true');
+      scheduleNext();
+    }catch(e){ musicOn = false; }
+  }
+
+  function playNote(freq, time, dur, vol){
+    if(!audioCtx) return;
+    var osc = audioCtx.createOscillator();
+    var osc2 = audioCtx.createOscillator();
+    var g = audioCtx.createGain();
+    osc.type = 'sine';
+    osc2.type = 'sine';
+    osc.frequency.value = freq;
+    osc2.frequency.value = freq * 2;
+    var g2 = audioCtx.createGain();
+    g2.gain.value = 0.18;
+    osc2.connect(g2); g2.connect(g);
+    osc.connect(g);
+    g.gain.setValueAtTime(0.0001, time);
+    g.gain.linearRampToValueAtTime(vol, time + 0.06);
+    g.gain.exponentialRampToValueAtTime(0.0001, time + dur);
+    g.connect(masterGain);
+    osc.start(time); osc.stop(time + dur + 0.1);
+    osc2.start(time); osc2.stop(time + dur + 0.1);
+  }
+
+  function scheduleNext(){
+    var chord = chords[chordIdx % chords.length];
+    chordIdx++;
+    var t = audioCtx.currentTime + 0.1;
+    // 和弦垫音
+    for(var i=0;i<chord.length;i++){ playNote(chord[i], t, 3.6, 0.05); }
+    // 琶音（上行）
+    var seq = [0,1,2,3,2,1];
+    seq.forEach(function(step, k){
+      var freq = chord[step] * (k>=4 ? 1 : 1);
+      playNote(freq * 2, t + 0.5 + k*0.62, 1.8, 0.075);
+    });
+    musicTimer = setTimeout(scheduleNext, 3800);
+  }
+
+  function toggleMusic(){
+    if(!musicOn){
+      startMusic();
+    }else{
+      musicOn = false;
+      if(musicTimer) clearTimeout(musicTimer);
+      if(masterGain) masterGain.gain.value = 0;
+      musicToggle.classList.remove('playing');
+      musicToggle.setAttribute('aria-pressed','false');
+    }
+  }
+
+  /* ================= 场景切换 ================= */
+  function showScene(el){
+    [intro, lockScene, cakeScene, blessing].forEach(function(s){ s.classList.remove('active'); });
+    el.classList.add('active');
+  }
+
+  /* ================= 全屏 + 横屏 ================= */
+  function requestFullscreen(){
+    var el = document.documentElement;
+    try{
+      if(el.requestFullscreen){ return el.requestFullscreen(); }
+      else if(el.webkitRequestFullscreen){ return el.webkitRequestFullscreen(); }
+    }catch(e){}
+    return Promise.resolve();
+  }
+
+  function lockLandscape(){
+    try{
+      if(screen.orientation && screen.orientation.lock){
+        return screen.orientation.lock('landscape').catch(function(){});
+      }
+    }catch(e){}
+    return Promise.resolve();
+  }
+
+  function isLandscape(){
+    return (window.innerWidth > window.innerHeight);
+  }
+
+  /* ================= 开场点击 ================= */
+  cakeBtn.addEventListener('click', function(){
+    startMusic();
+    // 移动端：全屏 + 尝试横屏
+    if(isTouch){
+      requestFullscreen().then(function(){
+        return lockLandscape();
+      }).then(function(){
+        // 稍等判断方向
+        setTimeout(function(){
+          if(isLandscape()){
+            enterLock();
+          }else{
+            rotateHint.classList.add('show');
+          }
+        }, 350);
+      }).catch(function(){
+        rotateHint.classList.add('show');
+      });
+    }else{
+      // PC 端：可选全屏，直接进入
+      requestFullscreen();
+      enterLock();
+    }
+  });
+
+  rotateSkip.addEventListener('click', function(){
+    rotateHint.classList.remove('show');
+    enterLock();
+  });
+
+  // 用户手动旋转后自动进入
+  var mq = window.matchMedia('(orientation: landscape)');
+  function onOrientationChange(e){
+    if(stage === 'intro' && rotateHint.classList.contains('show') && e.matches){
+      rotateHint.classList.remove('show');
+      enterLock();
+    }
+  }
+  if(mq.addEventListener){ mq.addEventListener('change', onOrientationChange); }
+  else if(mq.addListener){ mq.addListener(onOrientationChange); }
+
+  /* ================= 进入密码页 ================= */
+  function enterLock(){
+    if(stage !== 'intro') return;
+    stage = 'lock';
+    showScene(lockScene);
+    musicToggle.classList.add('on');
+    setTimeout(function(){ lockInput.focus(); }, 450);
+  }
+
+  /* ================= 密码校验 ================= */
+  lockInput.addEventListener('input', function(){
+    var raw = lockInput.value.replace(/\D/g,'');
+    lockInput.value = raw;
+    if(raw.length === 4){
+      if(raw === '1125'){
+        enterCake();
+      }else{
+        lockInput.classList.remove('shake');
+        void lockInput.offsetWidth;
+        lockInput.classList.add('shake');
+        lockError.classList.add('show');
+        lockInput.value = '';
+        setTimeout(function(){ lockError.classList.remove('show'); }, 1800);
+      }
+    }
+  });
+
+  /* ================= 进入蛋糕场景 ================= */
+  function enterCake(){
+    if(stage !== 'intro' && stage !== 'lock') return;
+    stage = 'cake';
+    showScene(cakeScene);
+    musicToggle.classList.add('on');
+    cakeTitle.style.animation = 'rise 1s ease both';
+    cakeSub.style.animation = 'rise 1s .15s ease both';
+    // 2 秒后出现"开始许愿"按钮
+    timers.push(setTimeout(function(){
+      wishBtn.classList.remove('hidden');
+    }, 1800));
+  }
+
+  /* ================= 许愿：闭眼（变黑 -> 亮起） ================= */
+  wishBtn.addEventListener('click', function(){
+    if(stage !== 'cake') return;
+    stage = 'wish';
+    wishBtn.classList.add('hidden');
+    cakeSub.textContent = '闭上眼睛，许一个愿吧';
+    cakeSub.style.animation = 'rise 1s ease both';
+    // 1.6s 后变黑
+    timers.push(setTimeout(function(){
+      stage = 'dark';
+      darkOverlay.classList.add('black');
+    }, 1600));
+    // 变黑后停留 3.6s，再亮起
+    timers.push(setTimeout(function(){
+      stage = 'lit';
+      darkOverlay.classList.remove('black');
+      cakeSub.textContent = '许好了吗？点击吹灭蜡烛';
+      cakeSub.style.animation = 'rise 1s ease both';
+      flame.setAttribute('tabindex','0');
+    }, 1600 + 1600 + 3600));
+  });
+
+  /* ================= 吹蜡烛 ================= */
+  function blowOut(){
+    if(stage !== 'lit') return;
+    stage = 'blown';
+    var c = flameCenter();
+    flame.classList.add('hit');
+    flame.style.animation = 'none';
+    flame.style.opacity = '0';
+    cakeGlow.classList.add('off');
+    smoke.classList.add('show');
+    cakeSub.textContent = '';
+    // 金色烟花绽放
+    fireworkBurst(c.x, c.y, 46);
+    timers.push(setTimeout(function(){ fireworkBurst(c.x - 70, c.y - 42, 30); fireworkBurst(c.x + 70, c.y - 48, 30); }, 240));
+    timers.push(setTimeout(function(){ fireworkBurst(c.x, c.y - 18, 28); }, 500));
+    // 1.4s 后进入祝福
+    timers.push(setTimeout(function(){
+      stage = 'blessing';
+      showScene(blessing);
+      spawnSparks();
+      revealNextPoemLine();
+    }, 1400));
+  }
+  flame.addEventListener('click', blowOut);
+  flame.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); blowOut(); }
+  });
+  // 整个蛋糕点击也可吹灭
+  cakeHolder.addEventListener('click', function(e){
+    if(e.target === flame) return; // 避免重复
+    blowOut();
+  });
+
+  /* ================= 祝福光点 ================= */
+  function spawnSparks(){
+    var n = isTouch ? 14 : 26;
+    for(var i=0;i<n;i++){
+      var s = document.createElement('span');
+      s.className = 'spark';
+      var size = 3 + Math.random()*5;
+      s.style.width = size+'px'; s.style.height = size+'px';
+      s.style.left = (10 + Math.random()*80)+'%';
+      s.style.animationDuration = (5 + Math.random()*5)+'s';
+      s.style.animationDelay = (Math.random()*3)+'s';
+      document.body.appendChild(s);
+    }
+  }
+
+  /* ================= 金色烟花 ================= */
+  var fwCanvas = $('fireworks'), fwCtx = fwCanvas.getContext('2d');
+  var fwParticles = [], fwRaf = null;
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var GOLD_COLORS = ['#d3ab68','#b98f4a','#f0d9a8','#fff3d6','#e6c37a'];
+  function resizeFw(){ fwCanvas.width = window.innerWidth; fwCanvas.height = window.innerHeight; }
+  window.addEventListener('resize', resizeFw);
+  resizeFw();
+
+  function fireworkBurst(x, y, count){
+    if(reduceMotion){ count = Math.min(count || 30, 8); }
+    count = count || 40;
+    for(var i=0;i<count;i++){
+      var angle = Math.random()*Math.PI*2;
+      var speed = 1 + Math.random()*3.8;
+      fwParticles.push({
+        x:x, y:y,
+        vx:Math.cos(angle)*speed,
+        vy:Math.sin(angle)*speed,
+        life:1,
+        decay:0.012 + Math.random()*0.015,
+        r:1.1 + Math.random()*2.1,
+        color:GOLD_COLORS[(Math.random()*GOLD_COLORS.length)|0],
+        gravity:0.04
+      });
+    }
+    if(!fwRaf) fwTick();
+  }
+  function fwTick(){
+    fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height);
+    var alive = [];
+    for(var i=0;i<fwParticles.length;i++){
+      var p = fwParticles[i];
+      p.x += p.vx; p.y += p.vy;
+      p.vy += p.gravity;
+      p.vx *= 0.984; p.vy *= 0.984;
+      p.life -= p.decay;
+      if(p.life <= 0) continue;
+      fwCtx.globalAlpha = Math.max(0, p.life);
+      fwCtx.fillStyle = p.color;
+      fwCtx.beginPath(); fwCtx.arc(p.x, p.y, p.r, 0, Math.PI*2); fwCtx.fill();
+      fwCtx.globalAlpha = Math.max(0, p.life*0.32);
+      fwCtx.beginPath(); fwCtx.arc(p.x, p.y, p.r*2.8, 0, Math.PI*2); fwCtx.fill();
+      alive.push(p);
+    }
+    fwCtx.globalAlpha = 1;
+    fwParticles = alive;
+    if(fwParticles.length){ fwRaf = requestAnimationFrame(fwTick); }
+    else { fwRaf = null; fwCtx.clearRect(0,0,fwCanvas.width,fwCanvas.height); }
+  }
+  function flameCenter(){
+    var r = flame.getBoundingClientRect();
+    return { x: r.left + r.width/2, y: r.top + r.height/2 };
+  }
+
+  /* 祝福页点空白处放烟花 */
+  blessing.addEventListener('click', function(e){
+    if(stage !== 'blessing') return;
+    if(e.target.closest('.wish-star, .fortune-card, .fortune-redraw, .btn, .poem-section, .gift-box, .gift-redraw, .flip-tile, .page-arrow')) return;
+    fireworkBurst(e.clientX, e.clientY, 30);
+  });
+
+  /* ================= 点亮愿望星 ================= */
+  var WISH_PHRASES = ['平安喜乐','万事胜意','岁岁欢愉','得偿所愿','顺遂无虞','温柔有光','来日方长'];
+  var wishStars = $('wishStars'), wishTags = $('wishTags'), wishDone = $('wishDone');
+  var litCount = 0;
+  var STAR_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.6l2.75 5.9 6.35.8-4.68 4.4 1.2 6.3-5.62-3.1-5.62 3.1 1.2-6.3-4.68-4.4 6.35-.8z"/></svg>';
+  WISH_PHRASES.forEach(function(phrase){
+    var b = document.createElement('button');
+    b.className = 'wish-star';
+    b.setAttribute('aria-label','点亮一颗愿望星');
+    b.innerHTML = STAR_SVG;
+    b.addEventListener('click', function(){
+      if(b.classList.contains('lit')) return;
+      b.classList.add('lit');
+      b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
+      var tag = document.createElement('span');
+      tag.className = 'wish-tag';
+      tag.textContent = phrase;
+      wishTags.appendChild(tag);
+      litCount++;
+      if(litCount === WISH_PHRASES.length){
+        timers.push(setTimeout(function(){ wishDone.classList.add('show'); }, 400));
+      }
+    });
+    wishStars.appendChild(b);
+  });
+
+  /* ================= 抽签祝福 ================= */
+  var FORTUNES = [
+    '愿你把日子过成诗，把岁月酿成酒',
+    '愿你所到之处，皆有光与暖意相随',
+    '愿你眼里长着太阳，笑里全是坦荡',
+    '愿所有美好，都如期而至',
+    '愿你这一岁，不慌不忙，活成喜欢的模样',
+    '愿时光温柔以待，岁月不扰清欢',
+    '愿你被世界温柔以待，也能温柔待世界',
+    '愿你的每一天，都值得被纪念',
+    '愿你的烦恼，都像泡泡一样一戳就破',
+    '愿你有酒有肉有朋友，也有诗和远方',
+    '愿每一个平凡的日子，都藏着小小的惊喜',
+    '愿你历尽千帆，归来仍是少年'
+  ];
+  var fortuneCard = $('fortuneCard'), fortuneText = $('fortuneText'), fortuneRedraw = $('fortuneRedraw');
+  function drawFortune(){
+    fortuneText.textContent = FORTUNES[(Math.random()*FORTUNES.length)|0];
+  }
+  fortuneCard.addEventListener('click', function(){
+    if(fortuneCard.classList.contains('flipped')){
+      fortuneCard.classList.remove('flipped');
+    }else{
+      drawFortune();
+      fortuneCard.classList.add('flipped');
+    }
+  });
+  fortuneCard.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); fortuneCard.click(); }
+  });
+  fortuneRedraw.addEventListener('click', function(){
+    drawFortune();
+    fortuneCard.classList.remove('flipped');
+  });
+
+  /* ================= 生成贺卡 ================= */
+  var cardOverlay = $('cardOverlay'), cardBtn = $('cardBtn'), cardClose = $('cardClose');
+  cardBtn.addEventListener('click', function(){
+    cardOverlay.classList.add('show');
+  });
+  cardClose.addEventListener('click', function(){ cardOverlay.classList.remove('show'); });
+  cardOverlay.addEventListener('click', function(e){
+    if(e.target === cardOverlay) cardOverlay.classList.remove('show');
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && cardOverlay.classList.contains('show')){
+      cardOverlay.classList.remove('show');
+    }
+  });
+
+  /* ================= 逐句点亮祝福诗 ================= */
+  var poemSection = $('poemSection'), poemLines = Array.prototype.slice.call($('poemLines').children), poemHint = $('poemHint');
+  var poemIdx = 0;
+  function revealNextPoemLine(){
+    if(poemIdx < poemLines.length){
+      poemLines[poemIdx].classList.add('show');
+      poemIdx++;
+      if(poemIdx === poemLines.length){
+        poemHint.classList.add('off');
+        var r = poemSection.getBoundingClientRect();
+        fireworkBurst(r.left + r.width/2, r.top + 46, 22);
+      }
+    }
+  }
+  poemSection.addEventListener('click', function(e){
+    e.stopPropagation();
+    revealNextPoemLine();
+  });
+  poemSection.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); revealNextPoemLine(); }
+  });
+
+  /* ================= 拆礼物盒 ================= */
+  var GIFT_BLESSINGS = [
+    '愿你眼里常有星辰，心里常有阳光',
+    '愿有人懂你的欲言又止，也懂你的言外之意',
+    '愿你被这个世界温柔以待',
+    '愿你的好运气，都藏在日复一日的认真里',
+    '愿你每一岁，都奔走在自己的热爱里',
+    '愿你笑容常在，平安喜乐'
+  ];
+  var giftBox = $('giftBox'), giftReveal = $('giftReveal'), giftRedraw = $('giftRedraw');
+  function openGift(){
+    if(giftBox.classList.contains('open')) return;
+    giftBox.classList.add('open');
+    giftReveal.textContent = GIFT_BLESSINGS[(Math.random()*GIFT_BLESSINGS.length)|0];
+    giftReveal.classList.add('show');
+    giftRedraw.classList.add('show');
+    var r = giftBox.getBoundingClientRect();
+    fireworkBurst(r.left + r.width/2, r.top + r.height*0.3, 26);
+  }
+  giftBox.addEventListener('click', function(e){ e.stopPropagation(); openGift(); });
+  giftBox.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); openGift(); }
+  });
+  giftRedraw.addEventListener('click', function(e){
+    e.stopPropagation();
+    giftBox.classList.remove('open');
+    giftReveal.classList.remove('show');
+    setTimeout(openGift, 380);
+  });
+
+  /* ================= 翻祝福牌 ================= */
+  var FLIP_WORDS = ['平安','喜乐','顺遂','安康','如愿','坦途','温柔','明亮','自由'];
+  var flipGrid = $('flipGrid'), flipDone = $('flipDone');
+  var flipCount = 0;
+  var DIAMOND_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 22 12 12 22 2 12Z"/></svg>';
+  FLIP_WORDS.forEach(function(word){
+    var t = document.createElement('button');
+    t.className = 'flip-tile';
+    t.setAttribute('aria-label','翻开一张祝福牌');
+    t.innerHTML = '<span class="flip-inner"><span class="flip-face flip-front">'+DIAMOND_SVG+'</span><span class="flip-face flip-back"><span class="flip-word">'+word+'</span></span></span>';
+    t.addEventListener('click', function(){
+      if(t.classList.contains('flipped')) return;
+      t.classList.add('flipped');
+      flipCount++;
+      if(flipCount === FLIP_WORDS.length){
+        setTimeout(function(){ flipDone.classList.add('show'); }, 400);
+      }
+    });
+    flipGrid.appendChild(t);
+  });
+
+  /* ================= 祝福分页翻页 ================= */
+  var pageTrack = $('pageTrack');
+  var pages = Array.prototype.slice.call(pageTrack.querySelectorAll('.page'));
+  var pageCount = pages.length;
+  var pageDots = $('pageDots');
+  var pagePrev = $('pagePrev'), pageNext = $('pageNext'), swipeHint = $('swipeHint');
+  var curPage = 0;
+  (function(){
+    for(var i=0;i<pageCount;i++){
+      var d = document.createElement('span');
+      d.className = 'page-dot' + (i===0 ? ' on' : '');
+      pageDots.appendChild(d);
+    }
+  })();
+  var dots = Array.prototype.slice.call(pageDots.children);
+
+  function updatePager(){
+    pageTrack.style.transform = 'translateX(-' + (curPage*100) + '%)';
+    for(var k=0;k<pageCount;k++){
+      pages[k].classList.toggle('active', k===curPage);
+      dots[k].classList.toggle('on', k===curPage);
+    }
+    pagePrev.classList.toggle('hidden', curPage===0);
+    pageNext.classList.toggle('hidden', curPage===pageCount-1);
+  }
+  function goToPage(i){
+    if(i<0 || i>=pageCount || i===curPage) return;
+    curPage = i;
+    updatePager();
+    if(swipeHint) swipeHint.classList.add('hide');
+  }
+  function nextPage(){ goToPage(curPage+1); }
+  function prevPage(){ goToPage(curPage-1); }
+  pagePrev.addEventListener('click', prevPage);
+  pageNext.addEventListener('click', nextPage);
+
+  // 触摸滑动翻页
+  var tX=0, tY=0;
+  pageTrack.addEventListener('touchstart', function(e){
+    var t=e.touches[0]; tX=t.clientX; tY=t.clientY;
+  }, {passive:true});
+  pageTrack.addEventListener('touchend', function(e){
+    var t=e.changedTouches[0];
+    var dx=t.clientX-tX, dy=t.clientY-tY;
+    if(Math.abs(dx)>48 && Math.abs(dx)>Math.abs(dy)*1.5){
+      if(dx<0){ nextPage(); }else{ prevPage(); }
+    }
+  }, {passive:true});
+
+  // 键盘左右方向键翻页
+  document.addEventListener('keydown', function(e){
+    if(stage !== 'blessing') return;
+    if(cardOverlay.classList.contains('show')) return;
+    if(e.key === 'ArrowRight'){ nextPage(); }
+    else if(e.key === 'ArrowLeft'){ prevPage(); }
+  });
+
+  updatePager();
+
+  musicToggle.addEventListener('click', toggleMusic);
+
+  // 键盘无障碍：焦点可见
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && stage === 'blown'){
+      // 允许退出
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
